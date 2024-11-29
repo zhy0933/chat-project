@@ -9,12 +9,15 @@ RegisterDialog::RegisterDialog(QWidget *parent)
     , ui(new Ui::RegisterDialog)
 {
     ui->setupUi(this);
+    // 设置文本框的回显模式为密码模式
     ui->pass_lineEdit->setEchoMode(QLineEdit::Password);
     ui->confirm_lineEdit->setEchoMode(QLineEdit::Password);
+    // 设置错误提示的属性和样式并更新样式
     ui->err_tip->setProperty("state","normal");
     repolish(ui->err_tip);
     // 连接注册完成的信号和槽
     connect(HttpMgr::GetInstance().get(), &HttpMgr::sig_reg_mod_finish, this, &RegisterDialog::slot_reg_mod_finish);
+    initHttpHandlers();
 }
 
 RegisterDialog::~RegisterDialog()
@@ -36,6 +39,11 @@ void RegisterDialog::on_get_code_clicked()
     bool match = regex.match(email).hasMatch(); // 执行正则表达式匹配
     if(match){
         //发送http请求获取验证码
+        QJsonObject json_obj;
+        json_obj["email"] = email;
+        HttpMgr::GetInstance()->PostHttpReq(QUrl(gate_url_prefix+"/get_varifycode"),
+                                            json_obj, ReqId::ID_GET_VARIFY_CODE,Modules::REGISTERMOD);
+
     }else{
         //提示邮箱不正确
         showTip(tr("邮箱地址不正确"), false);
@@ -43,7 +51,7 @@ void RegisterDialog::on_get_code_clicked()
 }
 
 /**
- * @brief RegisterDialog::slot_reg_mod_finish 注册完成对应槽函数
+ * @brief RegisterDialog::slot_reg_mod_finish 注册完成对应的槽函数
  * @param id
  * @param res
  * @param err
@@ -55,7 +63,7 @@ void RegisterDialog::slot_reg_mod_finish(ReqId id, QString res, ErrorCodes err)
         return;
     }
 
-    // 解析 JSON 字符串,res需转化为QByteArray
+    // 解析 JSON 字符串, res需转化为QByteArray
     QJsonDocument jsonDoc = QJsonDocument::fromJson(res.toUtf8());
     //json解析错误
     if(jsonDoc.isNull()){
@@ -95,7 +103,7 @@ void RegisterDialog::showTip(QString str, bool b_ok)
  */
 void RegisterDialog::initHttpHandlers()
 {
-    // 为ID_GET_VARIFY_CODE注册获取验证码成功后的回包逻辑
+    // 为ID_GET_VARIFY_CODE（即获取验证码成功）注册对应的回包逻辑
     _handlers.insert(ReqId::ID_GET_VARIFY_CODE, [this](QJsonObject jsonObj){
         int error = jsonObj["error"].toInt();
         if(error != ErrorCodes::SUCCESS){

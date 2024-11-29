@@ -7,7 +7,8 @@
 #include <memory>
 #include <iostream>
 #include <mutex>
-
+#include <QDir>
+#include <QSettings>
 
 /**
  * @brief repolish用来根据属性刷新qss
@@ -37,5 +38,7 @@ enum ErrorCodes{
 enum Modules{
     REGISTERMOD = 0,
 };
+
+extern QString gate_url_prefix;
 
 #endif // GLOBAL_H
