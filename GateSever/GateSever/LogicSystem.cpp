@@ -1,5 +1,6 @@
 ﻿#include "LogicSystem.h"
 #include "HttpConnection.h" // 在.h中前置声明，在.cpp中包含，解决互引用
+#include "VerifyGrpcClient.h"
 
 void LogicSystem::RegGet(std::string url, HttpHandler handler) {
     _get_handlers.insert(make_pair(url, handler)); // 把url路径对应的回调插入map
@@ -49,9 +50,11 @@ LogicSystem::LogicSystem() {
             beast::ostream(connection->_response.body()) << jsonstr;
             return true;
         }
+
         auto email = src_root["email"].asString();
+        GetVarifyRsp rsp = VerifyGrpcClient::GetInstance()->GetVarifyCode(email); // Gate服务器通过grpc将邮箱发给Verify服务器
         std::cout << "email is " << email << std::endl;
-        root["error"] = 0;
+        root["error"] = rsp.error();
         root["email"] = src_root["email"]; // 将email返回
         std::string jsonstr = root.toStyledString();
         beast::ostream(connection->_response.body()) << jsonstr;
