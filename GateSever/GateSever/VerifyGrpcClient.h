@@ -38,9 +38,10 @@ public:
 
 	}
 private:
-	VerifyGrpcClient() {  // 构造函数设为私有
+	// 构造函数设为私有
+	VerifyGrpcClient() {  
 		// stub是通过通道channel通信的，在构造函数中初始化（没有为什么）
-		std::shared_ptr<Channel> channel = grpc::CreateChannel("127.0.0.1:50051", 
+		std::shared_ptr<Channel> channel = grpc::CreateChannel("127.0.0.1:50051", // 与对应的grpc服务器连接
 			grpc::InsecureChannelCredentials()); 
 		stub_ = VarifyService::NewStub(channel);
 	}
