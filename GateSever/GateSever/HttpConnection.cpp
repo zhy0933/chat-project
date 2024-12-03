@@ -1,7 +1,7 @@
 ﻿#include "HttpConnection.h"
 # include"LogicSystem.h"
-HttpConnection::HttpConnection(tcp::socket socket)
-    : _socket(std::move(socket)) { // 移动构造，socket没有拷贝构造
+HttpConnection::HttpConnection(boost::asio::io_context& ioc)
+    : _socket(ioc) { // 使用从池子中获取的ioc构造socket
 
 }
 

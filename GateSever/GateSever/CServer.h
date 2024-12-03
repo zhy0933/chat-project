@@ -19,6 +19,6 @@ class CServer :public std::enable_shared_from_this<CServer> // 可以获取自�
     private:
         tcp::acceptor  _acceptor;
         net::io_context& _ioc; // 注意这个是引用类型
-        tcp::socket   _socket;
+        
 };
 

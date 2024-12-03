@@ -26,6 +26,7 @@ struct SectionInfo {
             return *this;
         }
         this->_section_datas = src._section_datas;
+        return *this;
     }
 
     /// <summary>
@@ -65,6 +66,12 @@ public:
         return _config_map[section];
     }
 
+    // 不同于CRTP，用另一种方式实现的单例类
+    static ConfigMgr& Inst() { // 静态函数
+        static ConfigMgr cfg_mgr; // 使用局部静态变量，只有在第一次调用时会初始化
+        return cfg_mgr;
+    }
+
     // 拷贝赋值
     ConfigMgr& operator=(const ConfigMgr& src) {
         if (&src == this) {
@@ -78,9 +85,10 @@ public:
         this->_config_map = src._config_map;
     }
 
+
+private:
     // 默认构造 
     ConfigMgr();
-private:
     // key值是section的名字如GateServer，value是整个section管理的键值对
     std::map<std::string, SectionInfo> _config_map;
 };

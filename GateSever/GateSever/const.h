@@ -16,6 +16,9 @@
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>
+#include <atomic>
+#include <queue>
+#include <condition_variable>
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -28,5 +31,3 @@ enum ErrorCodes {
     RPCFailed = 1002,  //RPC请求错误
 };  
 
-class ConfigMgr;
-extern ConfigMgr gCfgMgr; // extern声明一个外部变量，说明是在外部定义的，这里在main中定义

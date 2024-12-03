@@ -9,7 +9,7 @@ int main()
 {
     try
     {
-        ConfigMgr gCfgMgr;
+        auto& gCfgMgr = ConfigMgr::Inst(); // 这里要用引用变量，因为ConfigMgr没有拷贝构造
         std::string gate_port_str = gCfgMgr["GateServer"]["Port"];
         unsigned short gate_port = atoi(gate_port_str.c_str());
 
