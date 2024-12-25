@@ -34,6 +34,7 @@ void HttpMgr::PostHttpReq(QUrl url, QJsonObject json, ReqId req_id, Modules mod)
     QNetworkReply * reply = _manager.post(request, data);
     //设置信号和槽等待发送完成
     // connect 时传入三个参数，是因为 lambda 表达式可以直接用作槽函数，不需要指定接收对象
+    // QNetworkReply::finished 信号触发时，执行捕获的 lambda 表达式
     QObject::connect(reply, &QNetworkReply::finished, [reply, self, req_id, mod](){
         //处理错误的情况                              // 这里不能直接用self捕获this，不安全，因为httpmgr可能会被释放，要有伪闭包的方式实现httpmgr生命周期延长
         if(reply->error() != QNetworkReply::NoError){

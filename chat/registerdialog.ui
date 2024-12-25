@@ -83,7 +83,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="user_lineEdit">
+            <widget class="QLineEdit" name="user_edit">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -122,7 +122,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="email_lineEdit">
+            <widget class="QLineEdit" name="email_edit">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -161,7 +161,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="pass_lineEdit">
+            <widget class="QLineEdit" name="pass_edit">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -200,7 +200,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="confirm_lineEdit">
+            <widget class="QLineEdit" name="confirm_edit">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -239,7 +239,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="varify_lineEdit">
+            <widget class="QLineEdit" name="varify_edit">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -291,7 +291,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
-            <widget class="QPushButton" name="confirm_btn">
+            <widget class="QPushButton" name="sure_btn">
              <property name="minimumSize">
               <size>
                <width>0</width>

@@ -44,14 +44,14 @@ DISTFILES += \
 
 win32:CONFIG(debug, debug | release)
 {
-    #Ö¸¶¨Òª¿½±´µÄÎÄ¼şÄ¿Â¼Îª¹¤³ÌÄ¿Â¼ÏÂreleaseÄ¿Â¼ÏÂµÄËùÓĞdll¡¢libÎÄ¼ş£¬ÀıÈç¹¤³ÌÄ¿Â¼ÔÚD:\QT\Test
-    #PWD¾ÍÎªD:/QT/Test£¬DllFile = D:/QT/Test/release/*.dll
+    #æŒ‡å®šè¦æ‹·è´çš„æ–‡ä»¶ç›®å½•ä¸ºå·¥ç¨‹ç›®å½•ä¸‹releaseç›®å½•ä¸‹çš„æ‰€æœ‰dllã€libæ–‡ä»¶ï¼Œä¾‹å¦‚å·¥ç¨‹ç›®å½•åœ¨D:\QT\Test
+    #PWDå°±ä¸ºD:/QT/Testï¼ŒDllFile = D:/QT/Test/release/*.dll
     TargetConfig = $${PWD}/config.ini
-    #½«ÊäÈëÄ¿Â¼ÖĞµÄ"/"Ìæ»»Îª"\"
+    #å°†è¾“å…¥ç›®å½•ä¸­çš„"/"æ›¿æ¢ä¸º"\"
     TargetConfig = $$replace(TargetConfig, /, \\)
-    #½«Êä³öÄ¿Â¼ÖĞµÄ"/"Ìæ»»Îª"\"
+    #å°†è¾“å‡ºç›®å½•ä¸­çš„"/"æ›¿æ¢ä¸º"\"
     OutputDir =  $${OUT_PWD}/$${DESTDIR}
     OutputDir = $$replace(OutputDir, /, \\)
-    //Ö´ĞĞcopyÃüÁî
+    //æ‰§è¡Œcopyå‘½ä»¤
     QMAKE_POST_LINK += copy /Y \"$$TargetConfig\" \"$$OutputDir\"
 }

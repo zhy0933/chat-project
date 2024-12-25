@@ -1,6 +1,7 @@
 ﻿#include "LogicSystem.h"
 #include "HttpConnection.h" // 在.h中前置声明，在.cpp中包含，解决互引用
 #include "VerifyGrpcClient.h"
+#include "RedisMgr.h"
 
 void LogicSystem::RegGet(std::string url, HttpHandler handler) {
     _get_handlers.insert(make_pair(url, handler)); // 把url路径对应的回调插入map
@@ -13,7 +14,7 @@ void LogicSystem::RegPost(std::string url, HttpHandler handler) {
 // 在构造时为不同路径对应的回调进行注册
 LogicSystem::LogicSystem() {
 
-    // 注册/get_test对应的回调函数
+    // 注册/get_test对应的逻辑
     RegGet("/get_test", [](std::shared_ptr<HttpConnection> connection) { 
         beast::ostream(connection->_response.body()) << "receive get_test req" << std::endl; // 将回复信息输入response内
         int i = 0;
@@ -24,7 +25,7 @@ LogicSystem::LogicSystem() {
         }
     }); 
 
-    // 注册/get_varifycode对应的回调函数
+    // 注册/get_varifycode对应的逻辑
     RegPost("/get_varifycode", [](std::shared_ptr<HttpConnection> connection) {
         auto body_str = boost::beast::buffers_to_string(connection->_request.body().data()); // 将请求的body转换为string类型
         std::cout << "receive body is " << body_str << std::endl;
@@ -57,9 +58,70 @@ LogicSystem::LogicSystem() {
         root["error"] = rsp.error();
         root["email"] = src_root["email"]; // 将email返回
         std::string jsonstr = root.toStyledString();
-        beast::ostream(connection->_response.body()) << jsonstr;
+        beast::ostream(connection->_response.body()) << jsonstr; // 将回复放到response中
         return true;
     });
+
+    // Server注册user_register对应的逻辑
+    RegPost("/user_register", [](std::shared_ptr<HttpConnection> connection) {
+        // 取出请求的body
+        auto body_str = boost::beast::buffers_to_string(connection->_request.body().data());
+        std::cout << "receive body is " << body_str << std::endl;
+        // 设置回复
+        connection->_response.set(http::field::content_type, "text/json");
+        Json::Value root;
+        Json::Reader reader;
+        Json::Value src_root;
+        // 解析body
+        bool parse_success = reader.parse(body_str, src_root);
+        if (!parse_success) { 
+            std::cout << "Failed to parse JSON data!" << std::endl;
+            root["error"] = ErrorCodes::Error_Json;
+            std::string jsonstr = root.toStyledString();
+            beast::ostream(connection->_response.body()) << jsonstr;
+            return true;
+        }
+
+        auto email = src_root["email"].asString();
+        auto name = src_root["user"].asString();
+        auto pwd = src_root["passwd"].asString();
+        auto confirm = src_root["confirm"].asString();
+        // 判断密码和确认密码是否一致
+        if (pwd != confirm) {
+            std::cout << "password err " << std::endl;
+            root["error"] = ErrorCodes::PasswdErr;
+            std::string jsonstr = root.toStyledString();
+            beast::ostream(connection->_response.body()) << jsonstr;
+            return true;
+        }
+        // 查找redis中email对应的验证码是否合理
+        std::string  varify_code;
+        bool b_get_varify = RedisMgr::GetInstance()->Get(CODEPREFIX + src_root["email"].asString(), varify_code);
+        if (!b_get_varify) { // 验证码是否过期
+            std::cout << " get varify code expired" << std::endl;
+            root["error"] = ErrorCodes::VarifyExpired;
+            std::string jsonstr = root.toStyledString();
+            beast::ostream(connection->_response.body()) << jsonstr;
+            return true;
+        }
+        if (varify_code != src_root["varifycode"].asString()) { // 验证码是否匹配
+            std::cout << " varify code error" << std::endl;
+            root["error"] = ErrorCodes::VarifyCodeErr;
+            std::string jsonstr = root.toStyledString();
+            beast::ostream(connection->_response.body()) << jsonstr;
+            return true;
+        }
+        // 如果匹配，写回复
+        root["error"] = 0;
+        root["email"] = email;
+        root["user"] = name;
+        root["passwd"] = pwd;
+        root["confirm"] = confirm;
+        root["varifycode"] = src_root["varifycode"].asString();
+        std::string jsonstr = root.toStyledString();
+        beast::ostream(connection->_response.body()) << jsonstr;
+        return true;
+        });
 }
 
 LogicSystem::~LogicSystem()

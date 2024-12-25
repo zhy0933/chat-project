@@ -1,4 +1,5 @@
-﻿#include "const.h"
+﻿#pragma once
+#include "const.h"
 
 /// <summary>
 /// 自己创建一个类用于管理config配置中的键值对

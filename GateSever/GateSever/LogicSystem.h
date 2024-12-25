@@ -1,6 +1,7 @@
 ﻿// 该类负责根据不同的 URL 路由请求并执行相应的业务逻辑
 #include"const.h"   
 
+
 // 定义一个 HttpHandler 类型，它表示一个接受 用于读写的http连接类 作为参数并且返回 void 的函数类型
 class HttpConnection;
 typedef std::function<void(std::shared_ptr<HttpConnection>)> HttpHandler; 

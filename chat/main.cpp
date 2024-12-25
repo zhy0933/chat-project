@@ -16,13 +16,13 @@ int main(int argc, char *argv[])
         qDebug("Open failed");
     }
 
-    // ÓÃÓÚ½âÎöÅäÖÃ
-    // »ñÈ¡µ±Ç°Ó¦ÓÃ³ÌĞòµÄÂ·¾¶
+    // è·å–å½“å‰åº”ç”¨ç¨‹åºçš„è·¯å¾„
     QString app_path = QCoreApplication::applicationDirPath();
-    // Æ´½ÓÎÄ¼şÃû
+    // æ‹¼æ¥é…ç½®æ–‡ä»¶çš„å®Œæ•´è·¯å¾„
     QString fileName = "config.ini";
     QString config_path = QDir::toNativeSeparators(app_path +
                                                    QDir::separator() + fileName);
+    // é€šè¿‡ QSettings åŠ è½½é…ç½®æ–‡ä»¶
     QSettings settings(config_path, QSettings::IniFormat);
     QString gate_host = settings.value("GateServer/host").toString();
     QString gate_port = settings.value("GateServer/port").toString();
